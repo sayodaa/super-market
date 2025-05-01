@@ -15,8 +15,12 @@ class Product extends HiveObject {
   @HiveField(3)
   int quantityUnit;
 
+  @HiveField(4)
+  double priceBuy;
+
   Product({
     required this.quantityUnit,
+    required this.priceBuy,
     required this.name,
     required this.price,
     required this.quantity,
