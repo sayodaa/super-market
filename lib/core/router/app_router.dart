@@ -14,7 +14,7 @@ final router = GoRouter(
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      path: RouteNames.sale,
+      path: RouteNames.sales,
       builder: (context, state) => const AddProductScreen(),
     ),
     GoRoute(
