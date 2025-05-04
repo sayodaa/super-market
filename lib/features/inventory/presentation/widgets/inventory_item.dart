@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:mahmoud_hassan/features/home/data/product.dart';
+import 'package:mahmoud_hassan/core/local_data/product.dart';
 
 class InventoryItem extends StatelessWidget {
   const InventoryItem({
@@ -25,10 +27,20 @@ class InventoryItem extends StatelessWidget {
           children: [
             // Icon
             CircleAvatar(
-              radius: 24,
+              radius: 24.0,
               backgroundColor: Colors.blue.shade100,
-              child: const Icon(Icons.inventory, color: Colors.blue),
+              foregroundImage:
+                  product.image != null
+                      ? FileImage(File(product.image ?? ''))
+                      : AssetImage(
+                        'assets/images/empty_screen.png',
+                      ), //null or install image asset
             ),
+            // CircleAvatar(
+            //   radius: 24,
+            //   backgroundColor: Colors.blue.shade100,
+            //   child: const Icon(Icons.inventory, color: Colors.blue),
+            // ),
             const SizedBox(width: 16),
 
             // Product Details
@@ -39,8 +51,8 @@ class InventoryItem extends StatelessWidget {
                   Text(
                     'اسم المنتج: ${product.name}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -66,15 +78,15 @@ class InventoryItem extends StatelessWidget {
                 Text(
                   'سعر القطعة:${product.price.toStringAsFixed(0)}',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.green.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Text(
                   'مكسب العلبة:${profit.toStringAsFixed(0)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: profit >= 0 ? Colors.blue.shade700 : Colors.red,
-                      ),
+                    color: profit >= 0 ? Colors.blue.shade700 : Colors.red,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
