@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
           DashboardCard(
             title: "المشتريات",
             icon: Icons.shopping_cart,
-            child: RouteNames.sales,
+            child: RouteNames.purchases,
           ),
           DashboardCard(
             title: "المخزن",
