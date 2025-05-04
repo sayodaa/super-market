@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:mahmoud_hassan/features/home/data/product.dart';
+import 'package:mahmoud_hassan/core/local_data/product.dart';
 import 'package:mahmoud_hassan/features/inventory/presentation/widgets/inventory_item.dart';
 
 class InventoryScreen extends StatefulWidget {
@@ -24,22 +24,24 @@ class _InventoryScreenState extends State<InventoryScreen> {
     final products = productBox.values.toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inventory'),
-      ),
-      body: products.isEmpty
-          ? const Center(child: Text('No products in inventory.'))
-          : ListView.builder(
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return InventoryItem(product: product, onDelete: () { 
-                  setState(() {
-                    productBox.deleteAt(index);
-                  });
-                },);
-              },
-            ),
+      appBar: AppBar(title: const Text('Inventory')),
+      body:
+          products.isEmpty
+              ? const Center(child: Text('No products in inventory.'))
+              : ListView.builder(
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  return InventoryItem(
+                    product: product,
+                    onDelete: () {
+                      setState(() {
+                        productBox.deleteAt(index);
+                      });
+                    },
+                  );
+                },
+              ),
     );
   }
 }
