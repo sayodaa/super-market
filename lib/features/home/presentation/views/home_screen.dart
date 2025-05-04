@@ -23,9 +23,7 @@ class HomeScreen extends StatelessWidget {
               onTap:
                   () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => AddProductScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => AddProductScreen()),
                   ),
             ),
             ListTile(
@@ -45,10 +43,26 @@ class HomeScreen extends StatelessWidget {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
         children: [
-          DashboardCard(title: "المبيعات", icon: Icons.attach_money, child: RouteNames.sale,),
-          DashboardCard(title: "المشتريات", icon: Icons.shopping_cart, child: RouteNames.sale,),
-          DashboardCard(title: "المخزن", icon: Icons.inventory, child: RouteNames.inventory,),
-          DashboardCard(title: "العملاء", icon: Icons.person, child: RouteNames.sale,),
+          DashboardCard(
+            title: "المبيعات",
+            icon: Icons.attach_money,
+            child: RouteNames.sales,
+          ),
+          DashboardCard(
+            title: "المشتريات",
+            icon: Icons.shopping_cart,
+            child: RouteNames.sales,
+          ),
+          DashboardCard(
+            title: "المخزن",
+            icon: Icons.inventory,
+            child: RouteNames.inventory,
+          ),
+          DashboardCard(
+            title: "العملاء",
+            icon: Icons.person,
+            child: RouteNames.sales,
+          ),
         ],
       ),
     );
