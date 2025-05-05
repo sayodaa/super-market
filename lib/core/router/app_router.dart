@@ -2,6 +2,7 @@
 
 import 'package:go_router/go_router.dart';
 import 'package:mahmoud_hassan/core/router/route_names.dart';
+import 'package:mahmoud_hassan/features/customers/views/customers_view.dart';
 import 'package:mahmoud_hassan/features/home/presentation/views/home_screen.dart';
 import 'package:mahmoud_hassan/features/inventory/presentation/views/inentory_screen.dart';
 import 'package:mahmoud_hassan/features/purchases/presentation/views/purchases_screens.dart';
@@ -13,6 +14,10 @@ final router = GoRouter(
     GoRoute(
       path: RouteNames.home,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: RouteNames.clients,
+      builder: (context, state) => const DebtScreen(),
     ),
     GoRoute(
       path: RouteNames.sales,

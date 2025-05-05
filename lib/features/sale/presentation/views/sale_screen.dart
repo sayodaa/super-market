@@ -4,11 +4,11 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:mahmoud_hassan/core/app/app_cubit/app_cubit.dart';
 import 'package:mahmoud_hassan/core/local_data/product.dart';
 
-// ignore: use_key_in_widget_constructors
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddProductScreenState createState() => _AddProductScreenState();
 }
 

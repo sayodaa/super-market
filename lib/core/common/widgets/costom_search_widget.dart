@@ -20,9 +20,7 @@ class CustomSearchWidget extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Search...',
           prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
         ),
       ),
     );
