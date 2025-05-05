@@ -4,6 +4,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:mahmoud_hassan/core/app/app_cubit/app_cubit.dart';
 import 'package:mahmoud_hassan/core/router/app_router.dart';
 import 'package:mahmoud_hassan/core/local_data/product.dart';
+import 'package:mahmoud_hassan/features/customers/data/models/debt.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +15,8 @@ void main() async {
   // await Hive.deleteBoxFromDisk('products');
 
   await Hive.openBox<Product>('products');
-
+  Hive.registerAdapter(DebtAdapter());
+  await Hive.openBox<Debt>('debts');
   runApp(const MyApp());
 }
 
