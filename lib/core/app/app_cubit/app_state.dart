@@ -7,3 +7,5 @@ class AppInitial extends AppState {}
 class GetproductImageSuccess extends AppState {}
 
 class GetproductImageFailure extends AppState {}
+
+class RemoveproductImageSuccess extends AppState {}

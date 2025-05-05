@@ -24,4 +24,9 @@ class AppCubit extends Cubit<AppState> {
       emit(GetproductImageFailure());
     }
   }
+
+  void removeProductImage() {
+    productImage = null;
+    emit(RemoveproductImageSuccess());
+  }
 }

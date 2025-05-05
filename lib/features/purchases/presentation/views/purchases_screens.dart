@@ -97,18 +97,20 @@ class _PurchasesScreensState extends State<PurchasesScreens> {
     );
   }
 
-  bool isProductExist(String productName) {
+  // التحقق من وجود المنتج وإرجاع مؤشره إذا كان موجوداً
+  int? findProductIndex(String productName) {
     final box = Hive.box<Product>('products');
 
+    // البحث عن المنتج بنفس الاسم (مع تجاهل حالة الأحرف)
     for (int i = 0; i < box.length; i++) {
       final product = box.getAt(i);
       if (product != null &&
           product.name.trim().toLowerCase() ==
               productName.trim().toLowerCase()) {
-        return true;
+        return i;
       }
     }
-    return false;
+    return null; // إرجاع null إذا لم يتم العثور على المنتج
   }
 
   void saveProduct() {
@@ -119,40 +121,90 @@ class _PurchasesScreensState extends State<PurchasesScreens> {
     final priceBuy = double.tryParse(_priceBuyUnitController.text) ?? 0;
     final image = AppCubit.get(context).productImage;
 
+    // التحقق من صحة المدخلات
     if (name.isEmpty || price <= 0 || quantity <= 0) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('يرجى إدخال بيانات صحيحة.')));
       return;
     }
-    if (isProductExist(name)) {
+
+    final box = Hive.box<Product>('products');
+    final existingProductIndex = findProductIndex(name);
+
+    // إذا كان المنتج موجوداً بالفعل، يتم زيادة الكمية
+    if (existingProductIndex != null) {
+      // الحصول على المنتج الموجود
+      final existingProduct = box.getAt(existingProductIndex)!;
+
+      // تحديث بيانات المنتج مع زيادة الكمية
+      final updatedProduct = Product(
+        name: existingProduct.name,
+        price:
+            price, // يمكن الاحتفاظ بالسعر الجديد أو استخدام القديم: existingProduct.price
+        quantityUnit:
+            quantityUnit, // يمكن تحديث أو الاحتفاظ بالقديم: existingProduct.quantityUnit
+        quantity: existingProduct.quantity + quantity, // زيادة الكمية
+        priceBuy:
+            priceBuy, // يمكن تحديث أو الاحتفاظ بالقديم: existingProduct.priceBuy
+        image:
+            image?.path ??
+            existingProduct
+                .image, // استخدام الصورة الجديدة إذا كانت متوفرة، وإلا استخدام القديمة
+      );
+
+      // تحديث المنتج في المخزن
+      box.putAt(existingProductIndex, updatedProduct);
+
+      // عرض رسالة نجاح
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('المنتج "$name" موجود بالفعل!'),
-          backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 3),
+          content: Text(
+            'تم تحديث كمية المنتج "$name" بنجاح! (الكمية الكلية: ${updatedProduct.quantity})',
+          ),
+          backgroundColor: Colors.blue,
+          duration: const Duration(seconds: 2),
         ),
       );
-      return;
+    } else {
+      // إضافة منتج جديد إذا لم يكن موجوداً
+      final newProduct = Product(
+        name: name,
+        price: price,
+        quantityUnit: quantityUnit,
+        quantity: quantity,
+        priceBuy: priceBuy,
+        image: image?.path ?? '',
+      );
+
+      // إضافة المنتج الجديد
+      box.add(newProduct);
+
+      // عرض رسالة نجاح
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('تم إضافة المنتج "$name" بنجاح!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
-    final product = Product(
-      name: name,
-      price: price,
-      quantityUnit: quantityUnit,
-      quantity: quantity,
-      priceBuy: priceBuy,
-      image: image?.path ?? '',
-    );
-    final box = Hive.box<Product>('products');
-    box.add(product);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('تم إضافة المنتج "$name" بنجاح!'),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+
+    // مسح الحقول بعد الإضافة أو التحديث
+    _clearFields();
+
+    // العودة للشاشة السابقة
     Navigator.pop(context);
+  }
+
+  // دالة لمسح حقول الإدخال
+  void _clearFields() {
+    _nameController.clear();
+    _priceController.clear();
+    _quantityController.clear();
+    _quantityUnitController.clear();
+    _priceBuyUnitController.clear();
+    AppCubit.get(context).removeProductImage();
   }
 
   @override
@@ -165,4 +217,69 @@ class _PurchasesScreensState extends State<PurchasesScreens> {
     _priceBuyUnitController.dispose();
     super.dispose();
   }
+
+  // bool isProductExist(String productName) {
+  //   final box = Hive.box<Product>('products');
+  //   for (int i = 0; i < box.length; i++) {
+  //     final product = box.getAt(i);
+  //     if (product != null &&
+  //         product.name.trim().toLowerCase() ==
+  //             productName.trim().toLowerCase()) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+  // void saveProduct() {
+  //   final name = _nameController.text;
+  //   final price = double.tryParse(_priceController.text) ?? 0;
+  //   final quantity = int.tryParse(_quantityController.text) ?? 0;
+  //   final quantityUnit = int.tryParse(_quantityUnitController.text) ?? 0;
+  //   final priceBuy = double.tryParse(_priceBuyUnitController.text) ?? 0;
+  //   final image = AppCubit.get(context).productImage;
+  //   if (name.isEmpty || price <= 0 || quantity <= 0) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(const SnackBar(content: Text('يرجى إدخال بيانات صحيحة.')));
+  //     return;
+  //   }
+  //   if (isProductExist(name)) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('المنتج "$name" موجود بالفعل!'),
+  //         backgroundColor: Colors.orange,
+  //         duration: const Duration(seconds: 3),
+  //       ),
+  //     );
+  //     return;
+  //   }
+  //   final product = Product(
+  //     name: name,
+  //     price: price,
+  //     quantityUnit: quantityUnit,
+  //     quantity: quantity,
+  //     priceBuy: priceBuy,
+  //     image: image?.path ?? '',
+  //   );
+  //   final box = Hive.box<Product>('products');
+  //   box.add(product);
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('تم إضافة المنتج "$name" بنجاح!'),
+  //       backgroundColor: Colors.green,
+  //       duration: const Duration(seconds: 2),
+  //     ),
+  //   );
+  //   Navigator.pop(context);
+  // }
+  // @override
+  // void dispose() {
+  //   // تحرير الموارد
+  //   _nameController.dispose();
+  //   _priceController.dispose();
+  //   _quantityController.dispose();
+  //   _quantityUnitController.dispose();
+  //   _priceBuyUnitController.dispose();
+  //   super.dispose();
+  // }
 }
